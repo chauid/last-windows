@@ -3,7 +3,8 @@ rem 7001 : Logon
 rem 7002 : Logoff
 setlocal ENABLEDELAYEDEXPANSION
 rem 초기값 설정 
-set orderby=desc
+chcp 949 > nul
+set orderby=asc
 rem 명령어 구문 확인 
 set param1=%1
 set param2=%2
@@ -128,7 +129,8 @@ if "%log_param%"=="logon" (
    set combi_log[%combi_index%].second=!logoff_log[%logoff_index%].second!
    set /A logoff_index=%logoff_index%+1
 )
-goto return_log_%call_value%
+goto :eof
+rem goto return_log_%call_value%
 :main
 rem 로그 수 계산 
 set /A logoff_count=0
@@ -251,8 +253,7 @@ if !logon_log[%logon_index%].year! LSS !logoff_log[%logoff_index%].year! (
 ) else (
    set log_param=logoff
 )
-goto copy_log_to_combi_log
-:return_log_year
+call :copy_log_to_combi_log
 goto merge_log_loop
 :compare_month
 set call_value=month
@@ -262,8 +263,7 @@ if !logon_log[%logon_index%].month! LSS !logoff_log[%logoff_index%].month! (
 ) else (
    set log_param=logoff
 )
-goto copy_log_to_combi_log
-:return_log_month
+call :copy_log_to_combi_log
 goto merge_log_loop
 :compare_day
 set call_value=day
@@ -273,8 +273,7 @@ if !logon_log[%logon_index%].day! LSS !logoff_log[%logoff_index%].day! (
 ) else (
    set log_param=logoff
 )
-goto copy_log_to_combi_log
-:return_log_day
+call :copy_log_to_combi_log
 goto merge_log_loop
 :compare_hour
 set call_value=hour
@@ -284,8 +283,7 @@ if !logon_log[%logon_index%].hour! LSS !logoff_log[%logoff_index%].hour! (
 ) else (
    set log_param=logoff
 )
-goto copy_log_to_combi_log
-:return_log_hour
+call :copy_log_to_combi_log
 goto merge_log_loop
 :compare_minute
 set call_value=minute
@@ -295,8 +293,7 @@ if !logon_log[%logon_index%].minute! LSS !logoff_log[%logoff_index%].minute! (
 ) else (
    set log_param=logoff
 )
-goto copy_log_to_combi_log
-:return_log_minute
+call :copy_log_to_combi_log
 goto merge_log_loop
 :compare_second
 if !logon_log[%logon_index%].second! LEQ !logoff_log[%logoff_index%].second! (
@@ -304,8 +301,7 @@ if !logon_log[%logon_index%].second! LEQ !logoff_log[%logoff_index%].second! (
 ) else (
    set log_param=logoff
 )
-goto copy_log_to_combi_log
-:return_log_second
+call :copy_log_to_combi_log
 goto merge_log_loop
 
 :print_log
@@ -383,7 +379,7 @@ echo   -O               날짜/시간순으로 정렬 [기본값: -O:D]
 echo      --order:D     D  내림차순(가장 최신 항목부터)
 echo      --order:A     A  오름차순(가장 오래된 항목부터)
 echo   -V --version     버전 확인
-echo   -h --help        도움말 표시
+echo   -h --help        도움말 표시(현재 창 표시)
 goto end
 :version_print
 echo last command for Windows v0.9
